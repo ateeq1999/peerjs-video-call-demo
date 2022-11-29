@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client App</title>
+</head>
+<body>
+  <style>
+    #outgoing {
+      width: 600px;
+      word-wrap: break-word;
+      white-space: normal;
+    }
+  </style>
+  <form>
+    <textarea id="incoming"></textarea>
+    <button type="submit">submit</button>
+  </form>
+  <pre id="outgoing"></pre>
+  <div>
+    <h1>local</h1>
+    <video></video>
+  </div>
+  <div>
+    <h1>remote</h1>
+    <video id="remote"></video>
+  </div>
+  <script src="simplepeer.min.js"></script>
+  <script>
+    // get video/voice stream
+    navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true
+    }).then(gotMedia).catch((error) => {console.log(error)})
+
+    function gotMedia (localStream) {
+      var localVideo = document.querySelector('video')
+
+      if ('srcObject' in localVideo) {
+        localVideo.srcObject = localStream
+      } else {
+        localVideo.src = window.URL.createObjectURL(localStream) // for older browsers
+      }
+
+      localVideo.play()
+      
+      localVideo.muted
+      
+      var zamo = new SimplePeer({ initiator: true, stream: localStream, tr }) // you don't need streams here
+      var ateeg = new SimplePeer()
+
+      zamo.on('signal', data => {
+        console.log(data.type)
+        ateeg.signal({...data, user: "zamo" })
+      })
+
+      ateeg.on('stream', stream => {
+        // got remote video stream, now let's show it in a video tag
+        var reomte = document.getElementById('remote')
+        // var video = document.querySelector('video')
+
+        if ('srcObject' in reomte) {
+          reomte.srcObject = stream
+        } else {
+          reomte.src = window.URL.createObjectURL(stream) // for older browsers
+        }
+
+        reomte.play()
+        
+        reomte.muted
+      })
+    }
+  </script>
+</body>
+</html>

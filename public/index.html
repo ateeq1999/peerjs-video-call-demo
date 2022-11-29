@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+  <title>Client App</title>
+</head>
+<body>
+  <style>
+    #outgoing {
+      width: 600px;
+      word-wrap: break-word;
+      white-space: normal;
+    }
+    </style>
+  <form>
+    <textarea id="incoming"></textarea>
+    <button type="submit">submit</button>
+  </form>
+  <pre id="outgoing"></pre>
+  <div>
+    <h1>local</h1>
+    <video></video>
+  </div>
+  <div>
+    <h1>remote</h1>
+    <video id="remote"></video>
+  </div>
+  <!-- <script src="simplepeer.min.js"></script> -->
+  <script>
+    var ategPeer = new Peer(['ateeg'],{
+      path: '/peer-app',
+      port: 9000,
+      host: '/'
+    });
+    console.log(ategPeer)
+    var ateegConn = ategPeer.connect('zamo');
+
+    // on open will be launch when you successfully connect to PeerServer
+    ateegConn.on('open', (id) => {
+      console.log(id)
+      // here you have conn.id
+      ateegConn.send(JSON.stringify({
+        msg: 'conn open from ateeg'
+      }))
+    })
+
+    ategPeer.on('connection', function(conn) {
+      conn.on('data', function(data){
+        // Will print 'hi!'
+        console.log(data);
+      });
+    });
+
+
+    var peer = new Peer(['zamo'],{
+      path: '/peer-app',
+      port: 9000,
+      host: '/'
+    });
+    console.log(peer)
+    var conn = peer.connect('ateeg');
+
+    // on open will be launch when you successfully connect to PeerServer
+    conn.on('open', () => {
+      // here you have conn.id
+      conn.send(JSON.stringify({
+        msg: 'conn open from zamo'
+      }))
+    })
+
+    peer.on('connection', function(conn) {
+      conn.on('data', function(data){
+        // Will print 'hi!'
+        console.log(data);
+      });
+    });
+  </script>
+</body>
+</html>
