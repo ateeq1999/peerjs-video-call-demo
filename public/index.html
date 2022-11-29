@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+  <!-- <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/0.3.16/peer.min.js"></script>
   <title>Client App</title>
 </head>
 <body>
@@ -31,9 +32,9 @@
   <!-- <script src="simplepeer.min.js"></script> -->
   <script>
     var ategPeer = new Peer(['ateeg'],{
-      path: '/peer-app',
+      path: '/',
       port: 9000,
-      host: '/'
+      host: 'localhost',
     });
     console.log(ategPeer)
     var ateegConn = ategPeer.connect('zamo');
@@ -56,9 +57,9 @@
 
 
     var peer = new Peer(['zamo'],{
-      path: '/peer-app',
       port: 9000,
-      host: '/'
+      host: 'localhost',
+      key: '/'
     });
     console.log(peer)
     var conn = peer.connect('ateeg');
@@ -77,6 +78,8 @@
         console.log(data);
       });
     });
+
+    peer.on('socket-error', (err) => console.log(err))
   </script>
 </body>
 </html>
